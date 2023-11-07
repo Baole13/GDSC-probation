@@ -1,10 +1,83 @@
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale
-<title>snake apple</title>
-</head>
-<body>
-    <h1>conllision</h1>
-</body>
-</html>
+import pygame
+import random
+
+# Khởi tạo Pygame
+pygame.init()
+
+# Cài đặt màn hình
+width, height = 400, 400
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Snake Game")
+
+# Cài đặt màu sắc
+black = (0, 0, 0)
+red = (255, 0, 0)
+
+# Khởi tạo con rắn
+snake = [(100, 50), (90, 50), (80, 50)]
+snake_direction = 'RIGHT'
+
+# Khởi tạo quả táo
+apple = (random.randrange(1, (width//10)) * 10, random.randrange(1, (height//10)) * 10)
+
+# Cài đặt điểm số
+score = 0
+
+# Hàm vẽ con rắn
+def draw_snake(snake):
+    for pos in snake:
+        pygame.draw.rect(screen, black, [pos[0], pos[1], 10, 10])
+
+# Hàm vẽ quả táo
+def draw_apple(apple):
+    pygame.draw.rect(screen, red, [apple[0], apple[1], 10, 10])
+
+# Main game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Xử lý phím bấm để thay đổi hướng di chuyển của con rắn
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP] and snake_direction != 'DOWN':
+        snake_direction = 'UP'
+    if keys[pygame.K_DOWN] and snake_direction != 'UP':
+        snake_direction = 'DOWN'
+    if keys[pygame.K_LEFT] and snake_direction != 'RIGHT':
+        snake_direction = 'LEFT'
+    if keys[pygame.K_RIGHT] and snake_direction != 'LEFT':
+        snake_direction = 'RIGHT'
+
+    # Di chuyển con rắn
+    if snake_direction == 'UP':
+        snake[0] = (snake[0][0], snake[0][1] - 10)
+    if snake_direction == 'DOWN':
+        snake[0] = (snake[0][0], snake[0][1] + 10)
+    if snake_direction == 'LEFT':
+        snake[0] = (snake[0][0] - 10, snake[0][1])
+    if snake_direction == 'RIGHT':
+        snake[0] = (snake[0][0] + 10, snake[0][1])
+
+    # Kiểm tra va chạm với quả táo
+    if snake[0] == apple:
+        apple = (random.randrange(1, (width//10)) * 10, random.randrange(1, (height//10)) * 10)
+        snake.append((0, 0))
+        score += 1
+
+    # Xử lý va chạm với tường hoặc chính bản thân
+    if snake[0][0] >= width or snake[0][0] < 0 or snake[0][1] >= height or snake[0][1] < 0:
+        running = False
+    for block in snake[1:]:
+        if snake[0] == block:
+            running = False
+
+    # Xóa màn hình và vẽ lại các phần tử
+    screen.fill((0, 0, 0))
+    draw_snake(snake)
+    draw_apple(apple)
+    pygame.display.update()
+
+# Kết thúc Pygame
+pygame.quit()
