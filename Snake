@@ -16,13 +16,16 @@ snake2 = [(350, 350), (360, 350), (370, 350)]
 snake1_direction = 'RIGHT'
 snake2_direction = 'LEFT'
 
-apples = []
-
 # Create apple
+apples = []
 for _ in range(5):
     x = random.randrange(1, (width // 10)) * 10
     y = random.randrange(1, (height // 10)) * 10
     apples.append((x, y))
+
+def draw_apples(apples, color):
+    for apple in apples:
+        pygame.draw.rect(screen, color, [apple[0], apple[1], 10, 10])
 
 # Score of 2 player
 score1 = 0
@@ -91,16 +94,21 @@ while running:
 
 
     # Check collision with first player
-    if snake1[0] == apples:
-        apples = (random.randrange(1, (width//10)) * 10, random.randrange(1, (height//10)) * 10)
-        snake1.append((0, 0))
-        score1 += 1
+   for apple in apples:
+        if snake1[0] == apple:
+            apples.remove(apple)
+            x = random.randrange(1, (width // 10)) * 10
+            y = random.randrange(1, (height // 10)) * 10
+            apples.append((x, y))
+            score1 += 1
 
     # check collision with 2rd player
-    if snake2[0] == apples:
-        apples = (random.randrange(1, (width//10)) * 10, random.randrange(1, (height//10)) * 10)
-        snake2.append((0, 0))
-        score2 += 1
+    if snake2[0] == apple:
+            apples.remove(apppple)
+            x = random.randrange(1, (width // 10)) * 10
+            y = random.randrange(1, (height // 10)) * 10
+            apples.append((x, y))
+            score2 += 1
 
     
 # End game
