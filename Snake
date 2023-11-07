@@ -1,0 +1,116 @@
+import pygame
+import random
+
+# Begin
+pygame.init()
+
+# Screen
+width, height = 400, 400
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Dounake")
+
+
+# Create snake
+snake1 = [(50, 50), (40, 50), (30, 50)]
+snake2 = [(350, 350), (360, 350), (370, 350)]
+snake1_direction = 'RIGHT'
+snake2_direction = 'LEFT'
+
+
+apples = []
+
+
+# Create apple
+for _ in range(5):
+    x = random.randrange(1, (width // 10)) * 10
+    y = random.randrange(1, (height // 10)) * 10
+    apples.append((x, y))
+
+
+# Snake
+def draw_snake(snake, color):
+    for pos in snake:
+        pygame.draw.rect(screen, color, [pos[0], pos[1], 10, 10])
+
+# Apple
+def draw_apple(apple, color):
+    pygame.draw.rect(screen, color, [apple[0], apple[1], 10, 10])
+
+
+# Main game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    pygame.display.update()
+
+    # Moving button of 1st player
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP] and snake1_direction != 'DOWN':
+        snake1_direction = 'UP'
+    if keys[pygame.K_DOWN] and snake1_direction != 'UP':
+        snake1_direction = 'DOWN'
+    if keys[pygame.K_LEFT] and snake1_direction != 'RIGHT':
+        snake1_direction = 'LEFT'
+    if keys[pygame.K_RIGHT] and snake1_direction != 'LEFT':
+        snake1_direction = 'RIGHT'
+
+    # Moving button of 2rd player
+    if keys[pygame.K_w] and snake2_direction != 'DOWN':
+        snake2_direction = 'UP'
+    if keys[pygame.K_s] and snake2_direction != 'UP':
+        snake2_direction = 'DOWN'
+    if keys[pygame.K_a] and snake2_direction != 'RIGHT':
+        snake2_direction = 'LEFT'
+    if keys[pygame.K_d] and snake2_direction != 'LEFT':
+        snake2_direction = 'RIGHT'
+
+    # Moving of 1st player
+    if snake1_direction == 'UP':
+        snake1[0] = (snake1[0][0], snake1[0][1] - 10)
+    if snake1_direction == 'DOWN':
+        snake1[0] = (snake1[0][0], snake1[0][1] + 10)
+    if snake1_direction == 'LEFT':
+        snake1[0] = (snake1[0][0] - 10, snake1[0][1])
+    if snake1_direction == 'RIGHT':
+        snake1[0] = (snake1[0][0] + 10, snake1[0][1])
+
+    # Moving of 2rd player
+    if snake2_direction == 'UP':
+        snake2[0] = (snake2[0][0], snake2[0][1] - 10)
+    if snake2_direction == 'DOWN':
+        snake2[0] = (snake2[0][0], snake2[0][1] + 10)
+    if snake2_direction == 'LEFT':
+        snake2[0] = (snake2[0][0] - 10, snake2[0][1])
+    if snake2_direction == 'RIGHT':
+        snake2[0] = (snake2[0][0] + 10, snake2[0][1])
+
+    # Check collision of first player
+    if snake1[0] in snake2:
+        running = False
+
+    # Check collision of 2rd player
+    if snake2[0] in snake1:
+        running = False
+    
+    # Immpliment collision with screen and obstacles
+    if (snake1[0][0] >= width or snake1[0][0] < 0 or snake1[0][1] >= height or snake1[0][1] < 0) or (snake2[0][0] >= width or snake2[0][0] < 0 or snake2[0][1] >= height or snake2[0][1] < 0):
+            running = False
+
+
+    # Check collision with first player
+    if snake1[0] == apples:
+        apples = (random.randrange(1, (width//10)) * 10, random.randrange(1, (height//10)) * 10)
+        snake1.append((0, 0))
+        score1 += 1
+
+    # check collision with 2rd player
+    if snake2[0] == apples:
+        apples = (random.randrange(1, (width//10)) * 10, random.randrange(1, (height//10)) * 10)
+        snake2.append((0, 0))
+        score2 += 1
+
+    
+# End game
+pygame.quit()
